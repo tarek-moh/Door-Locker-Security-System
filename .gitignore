@@ -1,4 +1,6 @@
-# IAR build folders
+#----------------------------------
+# IAR build and output folders
+#----------------------------------
 **/Debug/
 **/Release/
 **/Obj/
@@ -6,7 +8,9 @@
 **/Output/
 **/BrowseInfo/
 
-# IAR generated files
+#----------------------------------
+# IAR generated (temporary) files
+#----------------------------------
 *.dep
 *.pbd
 *.pbi
@@ -23,18 +27,18 @@
 *.hex
 *.bin
 *.bak
+
+#----------------------------------
+# Ignore user-specific or debug configs
+#----------------------------------
 *.ewd
-*.ewp
-*.ewt
 *.ewd2
-*.ewp2
 *.ewd3
-*.ewp3
-
-# System files
-.DS_Store
-Thumbs.db
-
-# IAR settings scripts
+*.ewt
 **/settings/
 
+#----------------------------------
+# System files
+#----------------------------------
+.DS_Store
+Thumbs.db
