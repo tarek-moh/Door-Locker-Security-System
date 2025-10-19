@@ -1,0 +1,40 @@
+# IAR build folders
+**/Debug/
+**/Release/
+**/Obj/
+**/List/
+**/Output/
+**/BrowseInfo/
+
+# IAR generated files
+*.dep
+*.pbd
+*.pbi
+*.pbw
+*.xcl
+*.dnx
+*.dbgdt
+*.crun
+*.wsdt
+*.map
+*.lst
+*.srec
+*.elf
+*.hex
+*.bin
+*.bak
+*.ewd
+*.ewp
+*.ewt
+*.ewd2
+*.ewp2
+*.ewd3
+*.ewp3
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IAR settings scripts
+**/settings/
+
