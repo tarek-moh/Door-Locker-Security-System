@@ -15,9 +15,24 @@
  */
 #define COMM_END_MARKER   '\n'
 
+
+/* enumaration of command codes */
+typedef enum {
+    CMD_READY = 0x10,
+    CMD_SEND_PASSWORD,
+    CMD_PASSWORD_CORRECT,
+    CMD_PASSWORD_WRONG,
+    CMD_CHANGE_PASSWORD,
+    CMD_DOOR_UNLOCK,
+    CMD_DOOR_LOCK,
+    CMD_ALARM,
+    CMD_ACK
+} COMM_CommandID;
+
 /*******************************************************************************
  *                         Function Prototypes                                 *
  *******************************************************************************/
+
 
 /* Initializes UART communication channel */
 void COMM_Init(void);
