@@ -744,7 +744,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state></state>
+                    <state>$TOOLKIT_DIR$\CONFIG\generic_cortex.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -804,7 +804,7 @@
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabel</name>
-                    <state></state>
+                    <state>__iar_program_start</state>
                 </option>
                 <option>
                     <name>DoFill</name>
@@ -977,7 +977,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>Drivers_Test_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2086,7 +2086,16 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\..\Common\HAL\comm_interface.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\Common\HAL\comm_interface.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\main.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\Common\MCAL\tm4c123gh6pm.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\Common\MCAL\uart.c</name>
