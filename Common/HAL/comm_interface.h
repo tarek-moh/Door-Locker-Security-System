@@ -26,7 +26,8 @@ typedef enum {
     CMD_DOOR_UNLOCK,
     CMD_DOOR_LOCK,
     CMD_ALARM,
-    CMD_ACK
+    CMD_ACK,
+    CMD_UNKNOWN
 } COMM_CommandID;
 
 /*******************************************************************************
@@ -38,15 +39,15 @@ typedef enum {
 void COMM_Init(void);
 
 /* Send a command (1 byte) */
-void COMM_SendCommand(uint8 cmd);
+void COMM_SendCommand(uint8_t cmd);
 
 /* Send a string message terminated by COMM_END_MARKER */
-void COMM_SendMessage(const uint8 *msg);
+void COMM_SendMessage(const uint8_t *msg);
 
 /* Receive a command (1 byte) */
-uint8 COMM_ReceiveCommand(void);
+uint8_t COMM_ReceiveCommand(void);
 
 /* Receive a string message until COMM_END_MARKER */
-void COMM_ReceiveMessage(uint8 *buffer);
+void COMM_ReceiveMessage(uint8_t *buffer);
 
 #endif /* COMM_INTERFACE_H_ */

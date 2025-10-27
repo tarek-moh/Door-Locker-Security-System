@@ -1,0 +1,6 @@
+Test Name,Result
+Handshake Test,"('PASS', '[PASS] Handshake OK -> Received 0x18')"
+Password Entry Test (Correct),"('PASS', ""[PASS] Password Entry '1234' received expected Control response 0x12"")"
+Password Entry Test (Wrong),"('PASS', ""[PASS] Password Entry '0000' received expected Control response 0x13"")"
+Unlock Test,"('PASS', '[PASS] Unlock test successful. received 0x18')"
+Change Password Test,"('PASS', '[PASS] Change password test successful. received 0x18')"

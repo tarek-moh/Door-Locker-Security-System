@@ -33,7 +33,7 @@ void COMM_ReceiveMessage(uint8_t *buffer)
 {
     uint8_t i = 0;
     buffer[i] = UART_ReceiveByte();
-    while(buffer[i] != COMM_END_MARKER)
+    while(buffer[i] != COMM_END_MARKER && buffer[i] != '\r')
     {
         i++;
         buffer[i] = UART_ReceiveByte();
