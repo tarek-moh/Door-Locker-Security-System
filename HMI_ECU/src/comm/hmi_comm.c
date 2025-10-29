@@ -12,7 +12,7 @@ int main(void) {
     while (COMM_ReceiveCommand() != CMD_ACK) { }
 
     for (;;) {
-        uint8_t command = COMM_ReceiveCommand();
+        const uint8_t command = COMM_ReceiveCommand();
 
         switch (command) {
             case CMD_COMPARE_PASSWORD:
@@ -25,17 +25,25 @@ int main(void) {
                 } else {
                     COMM_SendCommand(CMD_PASSWORD_CORRECT);
                 }
+                // Loop indefinitely until a response is made
+                while (COMM_ReceiveCommand() != CMD_ACK) { }
                 break;
             case CMD_DOOR_LOCK:
                 lock_door();
+                COMM_SendCommand(CMD_ACK);
                 break;
             case CMD_DOOR_UNLOCK:
+                COMM_SendCommand(CMD_ACK);
                 unlock_door();
                 break;
             case CMD_CHANGE_PASSWORD:
                 uint8_t new_pass[10];
                 change_password(new_pass);
+                COMM_SendCommand(CMD_ACK);
                 break;
+            default:
+                COMM_SendCommand(CMD_UNKNOWN);
+
         }
     }
 
