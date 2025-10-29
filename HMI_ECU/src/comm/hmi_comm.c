@@ -27,13 +27,14 @@ int main(void) {
                 }
                 break;
             case CMD_DOOR_LOCK:
-                // Lock the door
+                lock_door();
                 break;
             case CMD_DOOR_UNLOCK:
-                // Unlock the door
+                unlock_door();
                 break;
             case CMD_CHANGE_PASSWORD:
-                // Change the password
+                uint8_t new_pass[10];
+                change_password(new_pass);
                 break;
         }
     }
