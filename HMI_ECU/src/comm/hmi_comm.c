@@ -1,4 +1,3 @@
-#include "hmi_comm.h"
 #include "comm_interface.h"
 #include "src/door/door_driver.h"
 #include "src/eeprom/eeprom_driver.h"
