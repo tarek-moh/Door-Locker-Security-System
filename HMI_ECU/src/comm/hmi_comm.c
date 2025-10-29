@@ -1,9 +1,9 @@
 #include "hmi_comm.h"
 #include "comm_interface.h"
+#include "src/door/door_driver.h"
+#include "src/eeprom/eeprom_driver.h"
 
 int main(void) {
-    unsigned int password = 1234;
-
     // Initialize the communication path
     COMM_Init();
     // Send a command to the Control_ECU that the HMI_ECU is reading for communication
@@ -16,7 +16,15 @@ int main(void) {
 
         switch (command) {
             case CMD_COMPARE_PASSWORD:
-                // compare the two passwords
+                uint8_t input[10];
+                COMM_ReceiveMessage(input);
+                int bool = compare_passwords(input);
+
+                if (bool == 1) {
+                    unlock_door();
+                } else {
+                    // Act accordingly
+                }
                 break;
             case CMD_DOOR_LOCK:
                 // Lock the door
