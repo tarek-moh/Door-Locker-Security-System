@@ -20,10 +20,10 @@ int main(void) {
                 COMM_ReceiveMessage(input);
                 int bool = compare_passwords(input);
 
-                if (bool == 1) {
-                    unlock_door();
+                if (bool == 0) {
+                    COMM_SendCommand(CMD_PASSWORD_INCORRECT);
                 } else {
-                    // Act accordingly
+                    COMM_SendCommand(CMD_PASSWORD_CORRECT);
                 }
                 break;
             case CMD_DOOR_LOCK:
