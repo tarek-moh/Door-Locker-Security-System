@@ -14,13 +14,13 @@ int main(void) {
         const uint8_t command = COMM_ReceiveCommand();
 
         switch (command) {
-            case CMD_COMPARE_PASSWORD:
+            case CMD_SEND_PASSWORD:
                 uint8_t input[10];
                 COMM_ReceiveMessage(input);
                 int bool = compare_passwords(input);
 
                 if (bool == 0) {
-                    COMM_SendCommand(CMD_PASSWORD_INCORRECT);
+                    COMM_SendCommand(CMD_PASSWORD_WRONG);
                 } else {
                     COMM_SendCommand(CMD_PASSWORD_CORRECT);
                 }

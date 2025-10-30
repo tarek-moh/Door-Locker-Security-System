@@ -19,9 +19,9 @@
 /* enumaration of command codes */
 typedef enum {
     CMD_READY = 0x10,
-    CMD_COMPARE_PASSWORD,
+    CMD_SEND_PASSWORD,
     CMD_PASSWORD_CORRECT,
-    CMD_PASSWORD_INCORRECT,
+    CMD_PASSWORD_WRONG,
     CMD_CHANGE_PASSWORD,
     CMD_DOOR_UNLOCK,
     CMD_DOOR_LOCK,
