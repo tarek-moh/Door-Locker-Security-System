@@ -64,7 +64,7 @@ int main(void)
     if (COMM_ReceiveByte() == CMD_ACK)
     {
         COMM_SendByte(CMD_SEND_PASSWORD);
-        COMM_SendString((uint8_t*)"1234");
+        COMM_SendMessage((uint8_t*)"1234");
     }
 }
 ```
@@ -83,7 +83,7 @@ int main(void)
     if (command == CMD_SEND_PASSWORD)
     {
         uint8_t password[10];
-        COMM_ReceiveString(password);
+        COMM_ReceiveMessage(password);
         // Compare password and reply accordingly
     }
 }
