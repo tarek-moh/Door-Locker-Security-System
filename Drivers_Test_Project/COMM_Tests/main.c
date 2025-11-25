@@ -1,6 +1,7 @@
 #include "../../Common/HAL/comm_interface.h"
 #include "string.h"
 
+
 /*
     Test file for the communication interface. It contains echo tests, command 
     tests and string message tests.
