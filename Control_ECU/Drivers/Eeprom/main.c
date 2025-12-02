@@ -1,4 +1,6 @@
-//#include "../../Control_ECU/Drivers/Buzzer/buzzer.h"
+#include "../Buzzer/buzzer.h"
+#include "../startup_ewarm/hw_nvic.h"
+#include "../startup_ewarm/hw_types.h"
 //#include "buzzer.h"
 #include "eeprom.h"
 #include "tm4c123gh6pm.h"
@@ -23,26 +25,30 @@ void toggle_LED(uint8_t led_pin) {
     GPIO_PORTF_DATA_R ^= led_pin;  // Toggle specific LED
 }
 
+
+
 int main(void){
- // init_Buzzer();
-// __asm("CPSIE I");  // set the I-bit in PRIMASK ? enables global interrupts
- // toggle_Buzzer();
+ 
+ __asm("CPSIE I");  // set the I-bit in PRIMASK ? enables global interrupts
+ 
+
+  Buzzer_Start();
   
   //testing reading from eeprom 
   
  // uint8_t entered_password[4] = {0x12, 0x34, 0x56, 0x78}; //mismatched password 
-  uint8_t entered_password[4] = {0xAA, 0xBB, 0xCC, 0xDD};
-  init_Eeprom();
-  init_LEDs(); 
-  bool compare_flag = compare_Passwords(entered_password);
+  //uint8_t entered_password[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+  //init_Eeprom();
+  //init_LEDs(); 
+  //bool compare_flag = compare_Passwords(entered_password);
   
-   if(compare_flag){
+  // if(compare_flag){
         //Password matched
-       toggle_LED(1 << 2);
-    } else {
+    //   toggle_LED(1 << 2);
+   // } else {
         // Password did not match
-      toggle_LED(1 << 1);  
-    }
+     // toggle_LED(1 << 1);  
+  //  }
    
    
     //testing writing in eeprom 
@@ -58,7 +64,7 @@ int main(void){
   //    toggle_LED(1 << 1);    
    // }
     
-   // while(1); //stop
-  
-  
+  while(1){} 
+   
+   
 }

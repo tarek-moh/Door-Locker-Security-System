@@ -2098,7 +2098,22 @@
         <name>$PROJ_DIR$\Drivers\Eeprom\eeprom.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\Drivers\startup_ewarm\hw_nvic.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Drivers\startup_ewarm\hw_types.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\Drivers\Eeprom\main.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Drivers\Motor\motor.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Drivers\Motor\motor.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Drivers\startup_ewarm\startup_ewarm.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Drivers\Buzzer\tm4c123gh6pm.h</name>
