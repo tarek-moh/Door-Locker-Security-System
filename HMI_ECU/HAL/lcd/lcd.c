@@ -1,5 +1,8 @@
 /*****************************************************************************
-
+ * File: lcd.c
+ * Description: 16x2 LCD Driver Implementation (4-bit mode)
+ * Author: Ahmedhh
+ * Date: December 4, 2025
  * 
  * Pin Configuration:
  *   RS  -> PB0 (Register Select: 0=Command, 1=Data)
@@ -11,7 +14,7 @@
  *****************************************************************************/
 
 #include "lcd.h"
-#include "dio.h"
+#include "GPIO.h"
 #include "systick.h"
 
 /******************************************************************************
@@ -36,9 +39,9 @@
  */
 static void LCD_EnablePulse(void)
 {
-    DIO_WritePin(LCD_PORT, LCD_EN, HIGH);
+    GPIO_WritePin(LCD_PORT, LCD_EN, HIGH);
     DelayMs(1);  /* Enable pulse width */
-    DIO_WritePin(LCD_PORT, LCD_EN, LOW);
+    GPIO_WritePin(LCD_PORT, LCD_EN, LOW);
     DelayMs(1);  /* Wait for command to execute */
 }
 
@@ -49,10 +52,10 @@ static void LCD_EnablePulse(void)
  */
 static void LCD_Send4Bits(uint8_t nibble)
 {
-    DIO_WritePin(LCD_PORT, LCD_D4, (nibble >> 0) & 0x01);
-    DIO_WritePin(LCD_PORT, LCD_D5, (nibble >> 1) & 0x01);
-    DIO_WritePin(LCD_PORT, LCD_D6, (nibble >> 2) & 0x01);
-    DIO_WritePin(LCD_PORT, LCD_D7, (nibble >> 3) & 0x01);
+    GPIO_WritePin(LCD_PORT, LCD_D4, (nibble >> 0) & 0x01);
+    GPIO_WritePin(LCD_PORT, LCD_D5, (nibble >> 1) & 0x01);
+    GPIO_WritePin(LCD_PORT, LCD_D6, (nibble >> 2) & 0x01);
+    GPIO_WritePin(LCD_PORT, LCD_D7, (nibble >> 3) & 0x01);
     LCD_EnablePulse();
 }
 
@@ -67,23 +70,23 @@ static void LCD_Send4Bits(uint8_t nibble)
 void LCD_Init(void)
 {
     /* Initialize GPIO pins as outputs */
-    DIO_Init(LCD_PORT, LCD_RS, OUTPUT);
-    DIO_Init(LCD_PORT, LCD_EN, OUTPUT);
-    DIO_Init(LCD_PORT, LCD_D4, OUTPUT);
-    DIO_Init(LCD_PORT, LCD_D5, OUTPUT);
-    DIO_Init(LCD_PORT, LCD_D6, OUTPUT);
-    DIO_Init(LCD_PORT, LCD_D7, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_RS, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_EN, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_D4, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_D5, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_D6, OUTPUT);
+    GPIO_Init(LCD_PORT, LCD_D7, OUTPUT);
     
     /* Initial state: RS = 0, EN = 0 */
-    DIO_WritePin(LCD_PORT, LCD_RS, LOW);
-    DIO_WritePin(LCD_PORT, LCD_EN, LOW);
+    GPIO_WritePin(LCD_PORT, LCD_RS, LOW);
+    GPIO_WritePin(LCD_PORT, LCD_EN, LOW);
     
     /* Wait for LCD to power up (>15ms after VCC reaches 4.5V) */
     DelayMs(50);
     
     /* Initialization sequence for 4-bit mode */
     /* Send 0x03 three times to ensure 8-bit mode is cleared */
-    DIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
+    GPIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
     
     LCD_Send4Bits(0x03);
     DelayMs(5);
@@ -117,7 +120,7 @@ void LCD_Init(void)
  */
 void LCD_SendCommand(uint8_t command)
 {
-    DIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
+        GPIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
     
     /* Send upper nibble */
     LCD_Send4Bits(command >> 4);
@@ -139,7 +142,7 @@ void LCD_SendCommand(uint8_t command)
  */
 void LCD_SendData(uint8_t data)
 {
-    DIO_WritePin(LCD_PORT, LCD_RS, HIGH);  /* Data mode */
+    GPIO_WritePin(LCD_PORT, LCD_RS, HIGH);  /* Data mode */
     
     /* Send upper nibble */
     LCD_Send4Bits(data >> 4);

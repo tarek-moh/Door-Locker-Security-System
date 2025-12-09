@@ -27,7 +27,9 @@ typedef enum {
     CMD_DOOR_LOCK,
     CMD_ALARM,
     CMD_ACK,
-    CMD_UNKNOWN
+    CMD_UNKNOWN,
+    CMD_SEND_TIMEOUT
+
 } COMM_CommandID;
 
 /*******************************************************************************

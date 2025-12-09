@@ -1,14 +1,18 @@
+/* main.c - HMI Application (uses your systick.c API: SysTick_Init / DelayMs) */
+
+#include <string.h>
+#include <stdint.h>
+
 #include "comm_interface.h"
 #include "lcd.h"
 #include "keypad.h"
-#include "timers.h" // For TIMER_init and TIMER_start (still not implemented )
-#include "potentiometer.h"// For POT_init and POT_getValue( still not implemented )
+#include "systick.h"
+#include "pot.h"
 
 #define PASS_LENGTH 5
 #define MAX_ATTEMPTS 3
 
-
-/************************* Function Prototypes *************************/
+/* Prototypes */
 void InitialPasswordSetup(void);
 void OpenDoorFlow(void);
 uint8_t EnterPassword(uint8_t *pass);
@@ -16,28 +20,31 @@ uint8_t CheckPasswordWithControl(uint8_t *pass);
 void ChangePasswordFlow(void);
 void SetAutoLockTimeout(void);
 
-
-/******************************* MAIN *********************************/
+/* Main */
 int main(void)
 {
+    /* Initialize peripherals (names kept as in your original files) */
     LCD_init();
     KEYPAD_init();
     COMM_Init();
-    TIMER_init();
-    POT_init();
+    POT_init(); /* if your pot init name differs, change back to your actual name */
 
-    /* Handshake */
+    /* Initialize SysTick for 1 ms tick using interrupts */
+    SysTick_Init(16000, SYSTICK_INT); /* 16 MHz clock -> reload = 16000 -> 1 ms tick */
+
+    /* Handshake with Control ECU */
     COMM_SendCommand(CMD_READY);
     if (COMM_ReceiveCommand() != CMD_ACK)
     {
+        LCD_clearScreen();
         LCD_displayString("Control ECU Err");
-        while(1);
+        while (1); /* hang */
     }
 
-    /* Step 1 — First-time password setup */
+    /* Initial password setup (if needed) */
     InitialPasswordSetup();
 
-    /* Step 2 — Main Menu Loop */
+    /* Main menu loop */
     while (1)
     {
         LCD_clearScreen();
@@ -50,16 +57,23 @@ int main(void)
         uint8_t key = KEYPAD_getPressedKey();
 
         if (key == '+')
+        {
             OpenDoorFlow();
+        }
         else if (key == '-')
+        {
             ChangePasswordFlow();
+        }
         else if (key == '*')
+        {
             SetAutoLockTimeout();
+        }
+        /* small debounce / CPU relief */
+        DelayMs(100);
     }
 }
 
-
-/************************* Step 1: Initial Password Setup *************************/
+/* Initial Password Setup */
 void InitialPasswordSetup(void)
 {
     uint8_t pass1[PASS_LENGTH + 1];
@@ -69,52 +83,62 @@ void InitialPasswordSetup(void)
     {
         LCD_clearScreen();
         LCD_displayString("Enter Password:");
-
         EnterPassword(pass1);
 
         LCD_clearScreen();
         LCD_displayString("Confirm:");
-
         EnterPassword(pass2);
 
         if (strcmp((char*)pass1, (char*)pass2) == 0)
         {
             COMM_SendCommand(CMD_CHANGE_PASSWORD);
-            COMM_SendMessage(pass1);
+            COMM_SendMessage(pass1); /* Make sure COMM_SendMessage expects null-terminated */
 
             if (COMM_ReceiveCommand() == CMD_ACK)
             {
                 LCD_clearScreen();
                 LCD_displayString("Saved!");
-                _delay_ms(1000);
+                DelayMs(1000);
                 break;
+            }
+            else
+            {
+                LCD_clearScreen();
+                LCD_displayString("Comm Err");
+                DelayMs(1000);
             }
         }
         else
         {
             LCD_clearScreen();
             LCD_displayString("Not Match!");
-            _delay_ms(1000);
+            DelayMs(1000);
         }
     }
 }
 
-
-/************************* Helper: Read password from keypad *************************/
+/* Read password from keypad (shows '*' on LCD) */
 uint8_t EnterPassword(uint8_t *pass)
 {
     for (uint8_t i = 0; i < PASS_LENGTH; i++)
     {
         uint8_t key = KEYPAD_getPressedKey();
+        /* Keep waiting if no key (adjust if your keypad returns 0 for none) */
+        while (key == 0)
+        {
+            DelayMs(20);
+            key = KEYPAD_getPressedKey();
+        }
         pass[i] = key;
         LCD_displayCharacter('*');
+        /* small debounce */
+        DelayMs(200);
     }
     pass[PASS_LENGTH] = '\0';
     return 1;
 }
 
-
-/************************* Step 3: Open Door *************************/
+/* Open Door Flow */
 void OpenDoorFlow(void)
 {
     uint8_t attempts = 0;
@@ -128,21 +152,25 @@ void OpenDoorFlow(void)
 
         if (CheckPasswordWithControl(pass))
         {
-            /* Correct password */
+            /* Correct password -> request unlock */
             COMM_SendCommand(CMD_DOOR_UNLOCK);
-            COMM_ReceiveCommand(); // Expect ACK
+            /* wait for ACK */
+            if (COMM_ReceiveCommand() == CMD_ACK)
+            {
+                LCD_clearScreen();
+                LCD_displayString("Unlocking...");
+                /* keep door open for configured timeout (Control ECU handles actual timing usually) */
+                DelayMs(3000); /* local UI delay while Control ECU handles motor */
+            }
 
-            LCD_clearScreen();
-            LCD_displayString("Unlocking...");
-            TIMER_start(3); 
-
-            /* after timeout door locks again */
-            LCD_clearScreen();
-            LCD_displayString("Locking...");
+            /* send lock command */
             COMM_SendCommand(CMD_DOOR_LOCK);
-            COMM_ReceiveCommand(); // Expect ACK
+            /* wait for ACK */
+            (void)COMM_ReceiveCommand();
 
-            _delay_ms(1000);
+            LCD_clearScreen();
+            LCD_displayString("Done");
+            DelayMs(1000);
             return;
         }
         else
@@ -150,35 +178,27 @@ void OpenDoorFlow(void)
             attempts++;
             LCD_clearScreen();
             LCD_displayString("Wrong!");
-            _delay_ms(800);
+            DelayMs(800);
         }
     }
 
-    /* If 3 failed attempts → alarm */
+    /* 3 failed attempts -> alarm */
     COMM_SendCommand(CMD_ALARM);
     LCD_clearScreen();
     LCD_displayString("LOCKED!");
-    TIMER_start(5); // buzzer handled on Control ECU
+    DelayMs(5000);
 }
 
-
-/************************* Helper: Check password with Control ECU *************************/
+/* Send password to Control ECU and check response */
 uint8_t CheckPasswordWithControl(uint8_t *pass)
 {
     COMM_SendCommand(CMD_SEND_PASSWORD);
     COMM_SendMessage(pass);
-
     uint8_t response = COMM_ReceiveCommand();
-
-    if (response == CMD_PASSWORD_CORRECT)
-        return 1;
-    else
-        return 0;
+    return (response == CMD_PASSWORD_CORRECT) ? 1 : 0;
 }
 
-
-
-/************************* Step 4: Change Password *************************/
+/* Change password flow */
 void ChangePasswordFlow(void)
 {
     uint8_t attempts = 0;
@@ -200,42 +220,43 @@ void ChangePasswordFlow(void)
             attempts++;
             LCD_clearScreen();
             LCD_displayString("Wrong!");
-            _delay_ms(800);
+            DelayMs(800);
         }
     }
 
-    /* Lockout */
+    /* Lockout and alarm */
     COMM_SendCommand(CMD_ALARM);
     LCD_clearScreen();
     LCD_displayString("LOCKED!");
-    TIMER_start(5);
+    DelayMs(5000);
 }
 
-
-
-/************************* Step 5: Set Auto-Lock Timeout *************************/
+/* Set Auto-Lock Timeout (reads potentiometer) */
 void SetAutoLockTimeout(void)
 {
     uint8_t pass[PASS_LENGTH + 1];
-
     uint8_t timeout = 5;
 
     while (1)
     {
         LCD_clearScreen();
         LCD_displayString("Timeout: ");
-        timeout = POT_getValue(5, 30);  // Get value from potentiometer in range 5-30(not implemented yet)
-        LCD_intgerToString(timeout);
+        /* use your POT reading API; keep original name POT_getValue */
+        timeout = POT_getValue(5, 30); /* make sure POT_getValue exists and returns 5..30 */
+        LCD_intgerToString(timeout);    /* spelled as in your original code */
         LCD_displayString(" sec");
 
         LCD_moveCursor(2,0);
         LCD_displayString("Press = to save");
 
-        if (KEYPAD_getPressedKey() == '=')
+        /* wait key press - small debounce */
+        uint8_t k = KEYPAD_getPressedKey();
+        if (k == '=')
             break;
+        DelayMs(200);
     }
 
-    /* Confirm by password */
+    /* confirm by password */
     LCD_clearScreen();
     LCD_displayString("Enter Pass:");
     EnterPassword(pass);
@@ -243,20 +264,18 @@ void SetAutoLockTimeout(void)
     if (CheckPasswordWithControl(pass))
     {
         COMM_SendCommand(CMD_SEND_TIMEOUT);
-        COMM_SendByte(timeout);
-
+        COMM_SendByte(timeout); /* ensure COMM_SendByte exists */
         if (COMM_ReceiveCommand() == CMD_ACK)
         {
             LCD_clearScreen();
             LCD_displayString("Saved!");
-            _delay_ms(1000);
+            DelayMs(1000);
         }
     }
     else
     {
         LCD_clearScreen();
         LCD_displayString("Wrong!");
-        _delay_ms(800);
+        DelayMs(800);
     }
 }
-
