@@ -1,5 +1,4 @@
 #include "buzzer.h"
-//#include "../../Common/MCAL/tm4c123gh6pm.h"
 #include "tm4c123gh6pm.h"
 
 
@@ -88,8 +87,8 @@ void Timer0A_Handler(void) {
 
 void Buzzer_Start(void) {
     init_Buzzer();
-    TIMER0_CTL_R &= ~(1 << 0); // Safety: Stop if running
-    TIMER0_ICR_R = 0x01;       // Safety: Clear pending interrupts
+    TIMER0_CTL_R &= ~(1 << 0); //Stop if running for safety
+    TIMER0_ICR_R = 0x01;       //Clear pending interrupts for safety
     
     beep_index = 0;
     buzzer_state = 1; 
