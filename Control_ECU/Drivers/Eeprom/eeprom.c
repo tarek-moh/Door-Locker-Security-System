@@ -1,5 +1,5 @@
 #include "eeprom.h"
-#include "tm4c123gh6pm.h"
+#include "../../../Common/MCAL/tm4c123gh6pm.h"
 
 #define USED_BLOCK 1 //used block 1 to store passwords
 #define PASSWORD_OFFSET 0 //used byte offset 0 to store password inside 

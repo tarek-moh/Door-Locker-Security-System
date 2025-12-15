@@ -1,5 +1,5 @@
 #include "buzzer.h"
-#include "tm4c123gh6pm.h"
+#include "../../../Common/MCAL/tm4c123gh6pm.h"
 
 
 #define TOTAL_BEEPS 3
@@ -32,7 +32,6 @@ When a pin is in alternate function mode, PCTL selects which alternate function 
   Bits 11:8   -> PB2
   .... so on !!
 */
-  GPIO_PORTB_PCTL_R &= ~0xF;       // clear PCTL(Port Control Register) for PB0
   
   //**********************************************TIMER0 init****************************************************//
   SYSCTL_RCGCTIMER_R |=(1<<0); //enable clock to timer 0

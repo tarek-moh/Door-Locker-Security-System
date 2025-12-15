@@ -3,10 +3,6 @@
 #include <stdint.h>
 
 //functions declarations
-void init_Buzzer(void);
-void Timer0A_Handler(void);
-void toggle_Buzzer(void);
 void Buzzer_Start(void);
-
 
 #endif

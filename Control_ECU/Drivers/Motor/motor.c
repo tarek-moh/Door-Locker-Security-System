@@ -1,5 +1,5 @@
 #include "motor.h"
-#include "tm4c123gh6pm.h"
+#include "../../../Common/MCAL/tm4c123gh6pm.h"
 
 
 #define CLK_FREQUENCY 16000000
@@ -7,21 +7,27 @@
 volatile uint8_t Motor_state = 0; // 0 = closed, 1 = opened
 
 /* 
+  ->NOTE: IN1 ->PB2 & IN2 ->PB3 !!
   -2 pins to output to the L298N (the H bridge) for logic handling 
-  -gonna use motor A driver only thats why we are gonna use pins IN1 & IN2 only in the logic
+  -gonna drive motor A driver only thats why we are gonna use pins IN1 & IN2 only in the logic
+  -when door is opened toggle the green led fo the whole time its opened and then toggle it to red once the timeout is 
+   reached for a while till the motor stops moving!!
+  
 */
 
 void init_LEDs(void) {
-    SYSCTL_RCGCGPIO_R |= (1 << 5);        // Enable clock for Port F
-    while(!(SYSCTL_PRGPIO_R & (1 << 5))); // Wait until Port F is ready
+    SYSCTL_RCGCGPIO_R |= (1 << 5);        //enable clock for Port F
+    while(!(SYSCTL_PRGPIO_R & (1 << 5))); //wait until Port F is ready
 
     GPIO_PORTF_DIR_R |= 0x0E;  // PF1, PF2, PF3 as output
-    GPIO_PORTF_DEN_R |= 0x0E;  // Digital enable PF1, PF2, PF3
-    GPIO_PORTF_DATA_R &= ~0x0E; // Turn all LEDs off initially
+    GPIO_PORTF_DEN_R |= 0x0E;  
+    GPIO_PORTF_DATA_R &= ~0x0E; // turn all LEDs off initially
 }
 
 void toggle_LED(uint8_t led_pin) {
-    GPIO_PORTF_DATA_R ^= led_pin;  // Toggle specific LED
+  
+    GPIO_PORTF_DATA_R &= ~0x0E; // turn all LEDs off initially
+    GPIO_PORTF_DATA_R ^= led_pin;  //toggle specific led
 }
 
 
@@ -46,6 +52,7 @@ void init_Motor(void){
   TIMER1_ICR_R = 0x01; //disable interrupts
   TIMER1_IMR_R |= 0x01; //enable interrupts 
   NVIC_EN0_R |= (1 << 21); // enable TIMER1A's only interrupt in NVIC!!!
+  //***********************init leds************************************//
   init_LEDs();
 }
 
@@ -56,16 +63,19 @@ void open_door(void){
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0
   TIMER1_CTL_R = 0x1; //start timer 
   for(int i = 0; i<5000000;i++){} //delay to keep the motor mocing for a while 
-  GPIO_PORTB_DATA_R &= ~(1<<2);
+  GPIO_PORTB_DATA_R &= ~(1<<2);  //IN1 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
 }
+
 void close_door(void){
   Motor_state = 0; //change state to closed
   
+  //change motor movemnt direction
   GPIO_PORTB_DATA_R &= ~(1<<2); //IN1 = 0
   GPIO_PORTB_DATA_R |=  (1<<3); //IN2 = 1
-  toggle_LED(1 << 3);
-  for(int i = 0; i<5000000;i++){} //delay to keep the motor mocing for a while
-  GPIO_PORTB_DATA_R &= ~(1<<3);
+  
+  toggle_LED(1 << 3); 
+  for(int i = 0; i<5000000;i++){} //delay to keep the motor moving for a while
+  GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
   
 }
 
