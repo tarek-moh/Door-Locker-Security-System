@@ -2,20 +2,25 @@
 #include "Drivers/Eeprom/eeprom.h"
 #include "Drivers/Motor/motor.h"
 #include "Drivers/Buzzer/buzzer.h"
+#include "Helpers/timer.h"
 
 #define MAX_ATTEMPTS 3
+#define TIMEOUT_MS 50
 
-void static inline WaitForAck(void);
+bool static inline WaitForAck(void);
 void static inline IncrementAttempts(uint8_t *attempts);
 void static inline ResetAttempts(uint8_t *attempts);
 
 int main(void) {
     // Initialize the communication path
     COMM_Init();
-    // Send a command to the Control_ECU that the HMI_ECU is reading for communication
 
+    // Initialize the timer
+    SysTick_Init(16000, SYSTICK_INT);
+
+    // Send a command to the Control_ECU that the HMI_ECU is reading for communication
     COMM_SendCommand(CMD_READY);
-    WaitForAck();
+    while (COMM_ReceiveCommand() != CMD_READY) { }
 
     uint8_t incorrectAttempts = 0;
     uint8_t input[10];
@@ -37,24 +42,11 @@ int main(void) {
                 }
                 WaitForAck();
                 break;
-            case CMD_DOOR_LOCK:
+            case CMD_DOOR_UNLOCK:
                 start_Motor(get_AutoLockTimeout());
                 COMM_SendCommand(CMD_ACK);
                 break;
             case CMD_CHANGE_PASSWORD:
-                COMM_ReceiveMessage(input);
-                if (compare_Passwords(input)) {
-                    ResetAttempts(&incorrectAttempts);
-                    COMM_SendCommand(CMD_PASSWORD_CORRECT);
-
-                    WaitForAck();
-                } else {
-                    IncrementAttempts(&incorrectAttempts);
-                    COMM_SendCommand(CMD_PASSWORD_WRONG);
-                    WaitForAck();
-                    break;
-                }
-
                 COMM_ReceiveMessage(input);
                 change_Password(input);
                 COMM_SendCommand(CMD_ACK);
@@ -77,13 +69,19 @@ int main(void) {
 }
 
 // Loop indefinitely until a response is made
-void static inline WaitForAck(void) {
+bool inline WaitForAck(void) {
+    // record start time
+    uint32_t start = msTicks;
+
     while (COMM_ReceiveCommand() != CMD_ACK) {
-        // todo: add a timeout
+        if ((msTicks - start) >= TIMEOUT_MS)
+            // timeout
+            return false;
     }
+    return true;
 }
 
-void static inline IncrementAttempts(uint8_t *attempts) {
+void inline IncrementAttempts(uint8_t *attempts) {
     if (*attempts < MAX_ATTEMPTS) {
         ++(*attempts);
     } else {
@@ -91,7 +89,7 @@ void static inline IncrementAttempts(uint8_t *attempts) {
     }
 }
 
-void static inline ResetAttempts(uint8_t *attempts) {
+void inline ResetAttempts(uint8_t *attempts) {
     *attempts = 0;
     // todo: Turn off buzzer
 }
