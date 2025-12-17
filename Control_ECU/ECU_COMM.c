@@ -3,11 +3,12 @@
 #include "Drivers/Motor/motor.h"
 #include "Drivers/Buzzer/buzzer.h"
 #include "Helpers/timer.h"
+#include "Helpers/software_reset.h"
 
 #define MAX_ATTEMPTS 3
-#define TIMEOUT_MS 50
+#define TIMEOUT_MS 100
 
-bool static inline WaitForAck(void);
+void static inline WaitForAck(void);
 void static inline IncrementAttempts(uint8_t *attempts);
 void static inline ResetAttempts(uint8_t *attempts);
 
@@ -69,16 +70,15 @@ int main(void) {
 }
 
 // Loop indefinitely until a response is made
-bool inline WaitForAck(void) {
+void inline WaitForAck(void) {
     // record start time
     uint32_t start = msTicks;
 
     while (COMM_ReceiveCommand() != CMD_ACK) {
         if ((msTicks - start) >= TIMEOUT_MS)
             // timeout
-            return false;
+            ResetTiva();
     }
-    return true;
 }
 
 void inline IncrementAttempts(uint8_t *attempts) {
