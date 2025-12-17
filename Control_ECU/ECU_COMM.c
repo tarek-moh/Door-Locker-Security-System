@@ -23,11 +23,15 @@ int main(void) {
     COMM_SendCommand(CMD_READY);
     while (COMM_ReceiveCommand() != CMD_READY) { }
 
+    // Impossible value initially
+    uint8_t lastCommand = 0xFF;
     uint8_t incorrectAttempts = 0;
     uint8_t input[10];
 
     for (;;) {
         const uint8_t command = COMM_ReceiveCommand();
+        // Already executed command
+        if (command == lastCommand) continue;
 
         switch (command) {
             case CMD_SEND_PASSWORD:
@@ -65,6 +69,7 @@ int main(void) {
                 COMM_SendCommand(CMD_UNKNOWN);
                 break;
         }
+        lastCommand = command;
     }
     return 0;
 }
