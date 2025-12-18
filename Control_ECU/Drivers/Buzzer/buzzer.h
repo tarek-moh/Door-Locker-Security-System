@@ -5,4 +5,6 @@
 //functions declarations
 void Buzzer_Start(void);
 
+uint8_t buzzer_State(void); //returns buzzer state!!
+
 #endif

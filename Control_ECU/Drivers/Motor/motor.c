@@ -4,7 +4,7 @@
 
 #define CLK_FREQUENCY 16000000
 
-volatile uint8_t Motor_state = 0; // 0 = closed, 1 = opened
+volatile uint8_t Door_State = 0; // 0 = closing and is kept in closed state, 1 = opening
 
 /* 
   ->NOTE: IN1 ->PB2 & IN2 ->PB3 !!
@@ -14,6 +14,9 @@ volatile uint8_t Motor_state = 0; // 0 = closed, 1 = opened
    reached for a while till the motor stops moving!!
   
 */
+uint8_t motor_state(void){
+  return Door_State;
+}
 
 void init_LEDs(void) {
     SYSCTL_RCGCGPIO_R |= (1 << 5);        //enable clock for Port F
@@ -58,7 +61,7 @@ void init_Motor(void){
 
 //NOTE: IN1 ->PB2 & IN2 ->PB3 !!
 void open_door(void){
-  Motor_state = 1; //change mmotor state to opening 
+  Door_State = 1; //change mmotor state to opening 
   GPIO_PORTB_DATA_R |=  (1<<2); //IN1 = 1
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0
   TIMER1_CTL_R = 0x1; //start timer 
@@ -67,7 +70,6 @@ void open_door(void){
 }
 
 void close_door(void){
-  Motor_state = 0; //change state to closed
   
   //change motor movemnt direction
   GPIO_PORTB_DATA_R &= ~(1<<2); //IN1 = 0
@@ -76,13 +78,12 @@ void close_door(void){
   toggle_LED(1 << 3); 
   for(int i = 0; i<5000000;i++){} //delay to keep the motor moving for a while
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
-  
 }
 
 void Timer1A_Handler(void){
   TIMER1_ICR_R = 0x1; // clear interrupt flag
   close_door();
-  
+  Door_State = 0; //change state to closed
 }
 
 

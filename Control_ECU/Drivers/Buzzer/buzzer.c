@@ -12,6 +12,12 @@ uint32_t off_durations[TOTAL_BEEPS] = {300, 300, 300};  // buzzer OFF
 // State variables
 volatile uint8_t buzzer_state = 0; // 0 = off, 1 = on
 volatile uint8_t beep_index = 0;
+volatile uint8_t buzzer_is_working = 0; // 0 ->buzzer isnt workin, 1 -> buzzer is working
+
+
+uint8_t buzzer_State(void){
+  return buzzer_is_working; //return buzzer working or not state for app logic
+} 
 
 //NOTE : TIMER by default counts down !!
 void init_Buzzer(void){
@@ -50,20 +56,19 @@ When a pin is in alternate function mode, PCTL selects which alternate function 
 
 void toggle_Buzzer(void) {
     if (buzzer_state == 1) {
-        // --- BUZZER WAS ON, TURN it OFF ---
+        // buzzer was on turn off for next timer
         GPIO_PORTB_DATA_R &= ~(1 << 0); 
         buzzer_state = 0;
 
-        // Load OFF duration
+        //load OFF duration
         TIMER0_TAILR_R = (off_durations[beep_index] * CYCLES_PER_MS) - 1;
-        TIMER0_CTL_R |= 0x01; // Restart Timer
-
+        TIMER0_CTL_R |= 0x01; //restart timer
     } else {
-        // --- BUZZER WAS OFF, CHECK NEXT ---
+        //buzzer was off check next beep
         beep_index++; 
-
+        
         if (beep_index < TOTAL_BEEPS) {
-            // Start next beep
+            //start next beep
             GPIO_PORTB_DATA_R |= (1 << 0); 
             buzzer_state = 1;
 
@@ -71,9 +76,10 @@ void toggle_Buzzer(void) {
             TIMER0_TAILR_R = (on_durations[beep_index] * CYCLES_PER_MS) - 1;
             TIMER0_CTL_R |= 0x01; // Restart Timer
         } else {
-            // --- DONE ---
-            TIMER0_CTL_R &= ~(1 << 0);      // Stop Timer
-            GPIO_PORTB_DATA_R &= ~(1 << 0); // Ensure Pin LOW
+            //stop buzzer from working
+            TIMER0_CTL_R &= ~(1 << 0);      //stop timer
+            GPIO_PORTB_DATA_R &= ~(1 << 0); //ensure Pin LOW
+            buzzer_is_working = 0; //marker to indicate buzzer not working!!
         }
     }
 }
@@ -85,9 +91,10 @@ void Timer0A_Handler(void) {
 }
 
 void Buzzer_Start(void) {
+    buzzer_is_working  = 1; //marker to indicate buzzer started !!
     init_Buzzer();
-    TIMER0_CTL_R &= ~(1 << 0); //Stop if running for safety
-    TIMER0_ICR_R = 0x01;       //Clear pending interrupts for safety
+    TIMER0_CTL_R &= ~(1 << 0); //Stop timer if running
+    TIMER0_ICR_R = 0x01;       //Clear pending interrupts 
     
     beep_index = 0;
     buzzer_state = 1; 
@@ -95,10 +102,9 @@ void Buzzer_Start(void) {
     // Load first ON duration
     TIMER0_TAILR_R = (on_durations[beep_index] * CYCLES_PER_MS) - 1;
     
-    // Turn ON
     GPIO_PORTB_DATA_R |= (1 << 0);
     
-    // GO
+    //start timer
     TIMER0_CTL_R |= 0x01; //the timers interrupt handler will get invoked when the first time from the array period have elapsed
 }
 

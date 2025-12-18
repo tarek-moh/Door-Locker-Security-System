@@ -8,4 +8,6 @@
 //pass the seconds needed for the door to stay open!!
 void start_Motor(int auto_lockoutSeconds);
 
+uint8_t motor_state(void); //returns door state (-1 is for closinga and maintaing closed state | 1 for openeed and maintain state ) 
+
 #endif 
