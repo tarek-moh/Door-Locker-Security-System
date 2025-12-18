@@ -1,205 +1,109 @@
-/*****************************************************************************
- * File: lcd.c
- * Description: 16x2 LCD Driver Implementation (4-bit mode)
- * Author: Ahmedhh
- * Date: December 4, 2025
- * 
- * Pin Configuration:
- *   RS  -> PB0 (Register Select: 0=Command, 1=Data)
- *   EN  -> PB1 (Enable signal)
- *   D4  -> PB2 (Data bit 4)
- *   D5  -> PB3 (Data bit 5)
- *   D6  -> PB4 (Data bit 6)
- *   D7  -> PB5 (Data bit 7)
- *****************************************************************************/
-
+#include "tm4c123gh6pm.h"
 #include "lcd.h"
-#include "GPIO.h"
-#include "systick.h"
 
-/******************************************************************************
- *                            Pin Definitions                                  *
- ******************************************************************************/
+// PCF8574 Address
+#define LCD_I2C_ADDR   0x27
 
-#define LCD_PORT        PORTB
-#define LCD_RS          PIN0
-#define LCD_EN          PIN1
-#define LCD_D4          PIN2
-#define LCD_D5          PIN3
-#define LCD_D6          PIN4
-#define LCD_D7          PIN5
+// Control bits
+#define LCD_BACKLIGHT  0x08
+#define EN             0x04
+#define RW             0x02
+#define RS             0x01
 
-/******************************************************************************
- *                          Private Functions                                  *
- ******************************************************************************/
-
-/*
- * LCD_EnablePulse
- * Generates a high-to-low pulse on the EN pin to latch data/command.
- */
-static void LCD_EnablePulse(void)
+// ---------- I2C LOW LEVEL ----------
+void I2C0_Init(void)
 {
-    GPIO_WritePin(LCD_PORT, LCD_EN, HIGH);
-    DelayMs(1);  /* Enable pulse width */
-    GPIO_WritePin(LCD_PORT, LCD_EN, LOW);
-    DelayMs(1);  /* Wait for command to execute */
+    SYSCTL_RCGCI2C_R |= 0x01;
+    SYSCTL_RCGCGPIO_R |= 0x02;
+
+    GPIO_PORTB_AFSEL_R |= 0x0C;
+    GPIO_PORTB_ODR_R   |= 0x08;
+    GPIO_PORTB_DEN_R   |= 0x0C;
+    GPIO_PORTB_AMSEL_R &= ~0x0C;
+    GPIO_PORTB_PCTL_R  = (GPIO_PORTB_PCTL_R & ~0xFF00) | 0x3300;
+
+    I2C0_MCR_R = 0x10;
+    I2C0_MTPR_R = 7;   // ? Correct
 }
 
-/*
- * LCD_Send4Bits
- * Sends 4 bits of data to the LCD via D4-D7 pins.
- * Parameters: nibble - 4-bit value to send (bits 0-3 used)
- */
-static void LCD_Send4Bits(uint8_t nibble)
-{
-    GPIO_WritePin(LCD_PORT, LCD_D4, (nibble >> 0) & 0x01);
-    GPIO_WritePin(LCD_PORT, LCD_D5, (nibble >> 1) & 0x01);
-    GPIO_WritePin(LCD_PORT, LCD_D6, (nibble >> 2) & 0x01);
-    GPIO_WritePin(LCD_PORT, LCD_D7, (nibble >> 3) & 0x01);
-    LCD_EnablePulse();
-}
 
-/******************************************************************************
- *                          Public Functions                                   *
- ******************************************************************************/
 
-/*
- * LCD_Init
- * Initializes the LCD in 4-bit mode.
- */
-void LCD_Init(void)
+void I2C0_SendByte(uint8_t data)
 {
-    /* Initialize GPIO pins as outputs */
-    GPIO_Init(LCD_PORT, LCD_RS, OUTPUT);
-    GPIO_Init(LCD_PORT, LCD_EN, OUTPUT);
-    GPIO_Init(LCD_PORT, LCD_D4, OUTPUT);
-    GPIO_Init(LCD_PORT, LCD_D5, OUTPUT);
-    GPIO_Init(LCD_PORT, LCD_D6, OUTPUT);
-    GPIO_Init(LCD_PORT, LCD_D7, OUTPUT);
-    
-    /* Initial state: RS = 0, EN = 0 */
-    GPIO_WritePin(LCD_PORT, LCD_RS, LOW);
-    GPIO_WritePin(LCD_PORT, LCD_EN, LOW);
-    
-    /* Wait for LCD to power up (>15ms after VCC reaches 4.5V) */
-    DelayMs(50);
-    
-    /* Initialization sequence for 4-bit mode */
-    /* Send 0x03 three times to ensure 8-bit mode is cleared */
-    GPIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
-    
-    LCD_Send4Bits(0x03);
-    DelayMs(5);
-    
-    LCD_Send4Bits(0x03);
-    DelayMs(1);
-    
-    LCD_Send4Bits(0x03);
-    DelayMs(1);
-    
-    /* Set to 4-bit mode */
-    LCD_Send4Bits(0x02);
-    DelayMs(1);
-    
-    /* Function set: 4-bit mode, 2 lines, 5x8 font */
-    LCD_SendCommand(LCD_4BIT_MODE);
-    
-    /* Display ON, cursor ON, blink OFF */
-    LCD_SendCommand(LCD_CURSOR_ON);
-    
-    /* Clear display */
-    LCD_Clear();
-    
-    /* Entry mode: increment cursor, no display shift */
-    LCD_SendCommand(LCD_ENTRY_MODE);
-}
+    I2C0_MSA_R = (LCD_I2C_ADDR << 1);
+    I2C0_MDR_R = data;
+    I2C0_MCS_R = 0x07;
 
-/*
- * LCD_SendCommand
- * Sends a command to the LCD (RS = 0).
- */
-void LCD_SendCommand(uint8_t command)
-{
-        GPIO_WritePin(LCD_PORT, LCD_RS, LOW);  /* Command mode */
-    
-    /* Send upper nibble */
-    LCD_Send4Bits(command >> 4);
-    
-    /* Send lower nibble */
-    LCD_Send4Bits(command & 0x0F);
-    
-    /* Wait for command to execute */
-    if (command == LCD_CLEAR || command == LCD_HOME) {
-        DelayMs(2);  /* Clear and home commands take longer */
-    } else {
-        DelayMs(1);
+    while (I2C0_MCS_R & 1);
+
+    if (I2C0_MCS_R & 0x02) // ERROR
+    {
+        I2C0_MCS_R = 0x04;
     }
 }
 
-/*
- * LCD_SendData
- * Sends a data byte to the LCD (RS = 1).
- */
+// ---------- LCD LOW LEVEL ----------
+void LCD_PulseEnable(uint8_t data)
+{
+    I2C0_SendByte(data | EN | LCD_BACKLIGHT);
+    for (volatile int i = 0; i < 3000; i++);
+    I2C0_SendByte((data & ~EN) | LCD_BACKLIGHT);
+    for (volatile int i = 0; i < 3000; i++);
+}
+
+void LCD_Write4Bits(uint8_t value)
+{
+    I2C0_SendByte(value | LCD_BACKLIGHT);
+    LCD_PulseEnable(value);
+}
+
+// ---------- HIGH LEVEL COMMANDS ----------
+void LCD_SendCommand(uint8_t cmd)
+{
+    LCD_Write4Bits(cmd & 0xF0);
+    LCD_Write4Bits((cmd << 4) & 0xF0);
+}
+
 void LCD_SendData(uint8_t data)
 {
-    GPIO_WritePin(LCD_PORT, LCD_RS, HIGH);  /* Data mode */
-    
-    /* Send upper nibble */
-    LCD_Send4Bits(data >> 4);
-    
-    /* Send lower nibble */
-    LCD_Send4Bits(data & 0x0F);
-    
-    DelayMs(1);  /* Wait for data to be written */
+    LCD_Write4Bits((data & 0xF0) | RS);
+    LCD_Write4Bits(((data << 4) & 0xF0) | RS);
 }
 
-/*
- * LCD_Clear
- * Clears the LCD display and returns cursor to home position.
- */
-void LCD_Clear(void)
+// ---------- PUBLIC FUNCTIONS ----------
+void LCD_I2C_Init(void)
 {
-    LCD_SendCommand(LCD_CLEAR);
-    DelayMs(2);  /* Clear command takes longer to execute */
+    I2C0_Init();
+
+    for (volatile int d=0; d<50000; d++); // Wait LCD boot
+
+    LCD_SendCommand(0x33);  
+    LCD_SendCommand(0x32);  
+    LCD_SendCommand(0x28);  // 4-bit, 2 line
+    LCD_SendCommand(0x0C);  // Display ON
+    LCD_SendCommand(0x06);  // Auto increment
+    LCD_I2C_Clear();
 }
 
-/*
- * LCD_SetCursor
- * Sets the cursor position on the LCD.
- * Parameters: 
- *   row - Row number (0 or 1)
- *   col - Column number (0 to 15)
- */
-void LCD_SetCursor(uint8_t row, uint8_t col)
+void LCD_I2C_Clear(void)
 {
-    uint8_t address;
-    
-    if (row == 0) {
-        address = LCD_LINE1 + col;
-    } else {
-        address = LCD_LINE2 + col;
-    }
-    
-    LCD_SendCommand(address);
+    LCD_SendCommand(0x01);
+    for (volatile int i=0;i<50000;i++);
 }
 
-/*
- * LCD_WriteString
- * Writes a string to the LCD at the current cursor position.
- */
-void LCD_WriteString(const char *str)
+void LCD_I2C_SetCursor(uint8_t row, uint8_t col)
 {
-    while (*str != '\0') {
-        LCD_SendData(*str);
-        str++;
-    }
+    uint8_t command = (row == 0 ? 0x80 : 0xC0) + col;
+    LCD_SendCommand(command);
 }
 
-/*
- * LCD_WriteChar
- * Writes a single character to the LCD at the current cursor position.
- */
-void LCD_WriteChar(char c)
+void LCD_I2C_WriteChar(char c)
 {
     LCD_SendData(c);
+}
+
+void LCD_I2C_WriteString(const char *str)
+{
+    while (*str)
+        LCD_SendData(*str++);
 }
