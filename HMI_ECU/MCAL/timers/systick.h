@@ -8,6 +8,5 @@
 
 void SysTick_Init(uint32_t reload, uint8_t mode);
 void DelayMs(uint32_t ms);
-uint32_t SysTick_GetMs(void);
 
 #endif
