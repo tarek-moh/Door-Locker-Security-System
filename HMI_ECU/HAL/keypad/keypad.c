@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 #include "keypad.h"
-#include "GPIO.h"
+#include "../../MCAL/gpio/gpio.h"
 
 /*
  * Keypad mapping array.
@@ -26,11 +26,11 @@ const char keypad_codes[4][4] = {
  * Columns are connected to PortC pins PC4-PC7 (outputs).
  * Rows are connected to PortA pins PA2-PA5 (inputs with pull-up).
  */
-#define KEYPAD_COL_PORT PORTC
-#define KEYPAD_COL_PINS {PIN4, PIN5, PIN6, PIN7} // PC4-PC7
+#define KEYPAD_COL_PORT PORTC_ID
+#define KEYPAD_COL_PINS {PIN4_ID, PIN5_ID, PIN6_ID, PIN7_ID} // PC4-PC7
 
-#define KEYPAD_ROW_PORT PORTA
-#define KEYPAD_ROW_PINS {PIN2, PIN3, PIN4, PIN5} // PA2-PA5
+#define KEYPAD_ROW_PORT PORTA_ID
+#define KEYPAD_ROW_PINS {PIN2_ID, PIN3_ID, PIN4_ID, PIN5_ID} // PA2-PA5
 
 
 /*
@@ -46,7 +46,7 @@ void Keypad_Init(void) {
     // Configure rows (PortA) as input with pull-up
     for (uint8_t i = 0; i < 4; i++) {
         GPIO_Init(KEYPAD_ROW_PORT, row_pins[i], INPUT);
-        GPIO_SetPUR(KEYPAD_ROW_PORT, row_pins[i], ENABLE);
+        GPIO_SetPullUp(KEYPAD_ROW_PORT, row_pins[i], HIGH);
     }
     // Configure columns (PortB) as output and set HIGH
     for (uint8_t i = 0; i < 4; i++) {

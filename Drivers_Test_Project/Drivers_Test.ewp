@@ -2086,13 +2086,61 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\adc\adc.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\adc\adc.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\..\Common\HAL\comm_interface.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\Common\HAL\comm_interface.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\COMM_Tests\main.c</name>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\gpio\gpio.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\gpio\gpio.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\App\hmi.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\App\hmi.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\keypad\keypad.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\keypad\keypad.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\lcd\lcd.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\lcd\lcd.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\led\led.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\led\led.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\main.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\pot\pot.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\HAL\pot\pot.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\timers\systick.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\HMI_ECU\MCAL\timers\systick.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\Common\MCAL\tm4c123gh6pm.h</name>

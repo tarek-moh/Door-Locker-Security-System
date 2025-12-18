@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include "tm4c123gh6pm.h"
+#include "../../tm4c123gh6pm.h"
 #include "systick.h"
-#include "gpio.h"
+#include "../../MCAL/gpio/gpio.h"
 
 volatile uint32_t msTicks = 0;
 static uint8_t interruptMode = 0;
@@ -43,7 +43,7 @@ void DelayMs(uint32_t ms)
 void SystickHandler(void)
 {
     /* Toggle Green LED every SysTick interrupt */
-    DIO_TogglePin(PORTF, PIN3);
-    DIO_TogglePin(PORTF, PIN3);
-    DIO_TogglePin(PORTF, PIN3);
+    DIO_TogglePin(PORTF_ID, PIN3_ID);
+    DIO_TogglePin(PORTF_ID, PIN3_ID);
+    DIO_TogglePin(PORTF_ID, PIN3_ID);
 }

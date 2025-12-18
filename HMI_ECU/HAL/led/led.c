@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 #include "led.h"
-#include "gpio.h"
+#include "../../MCAL/gpio/gpio.h"
 
 /*
  * RGB LED pins on TM4C LaunchPad:
@@ -16,10 +16,10 @@
  *   GREEN -> PF3
  */
 
-#define LED_PORT   PORTF
-#define LED_RED_PIN    PIN1
-#define LED_BLUE_PIN   PIN2
-#define LED_GREEN_PIN  PIN3
+#define LED_PORT   PORTF_ID
+#define LED_RED_PIN    PIN1_ID
+#define LED_BLUE_PIN   PIN2_ID
+#define LED_GREEN_PIN  PIN3_ID
 
 void LED_init(void)
 {

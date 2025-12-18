@@ -134,10 +134,10 @@ uint8_t HMI_VerifyPassword(const char* password)
     /* Send command to verify password */
     COMM_SendCommand(CMD_SEND_PASSWORD);
     
-    /* Wait for response */
-    uint8_t response = COMM_ReceiveCommand();
-    
     for (;;) {
+        /* Wait for response */
+        uint8_t response = COMM_ReceiveCommand();   
+        
         if(response == CMD_PASSWORD_CORRECT)
         {
             return 1;  /* Password correct */
@@ -224,7 +224,7 @@ uint8_t HMI_HandleOpenDoor(void)
         /* Password correct - send door unlock command */
         COMM_SendCommand(CMD_DOOR_UNLOCK);
         
-        while (COMM_ReceiveCommand != CMD_ACK) { }
+        while (COMM_ReceiveCommand() != CMD_ACK) { }
 
         /* Display unlocking status */
         LED_setOn(LED_GREEN);
@@ -261,7 +261,6 @@ uint8_t HMI_HandleChangePassword(void)
     }
     else
     {
-        
         LED_setOn(LED_RED);
         char msg[17];
         HMI_DisplayMessage("Wrong Password!", "");

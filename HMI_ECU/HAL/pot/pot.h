@@ -1,4 +1,4 @@
- File: pot.h
+ /*File: pot.h
  * Module: Potentiometer HAL (Hardware Abstraction Layer)
  * Description: Header file for Potentiometer HAL on TM4C123GH6PM
  * Author: Ahmedhh
