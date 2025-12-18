@@ -335,11 +335,13 @@ uint8_t HMI_SetupPassword(void)
 
 void HMI_ShowMainMenu(void)
 {
+
     LCD_I2C_Clear();
     LCD_I2C_SetCursor(0, 0);
-    LCD_I2C_WriteString("+ Open Door");
+    LCD_I2C_WriteString("A:Open  B:Chg");
     LCD_I2C_SetCursor(1, 0);
-    LCD_I2C_WriteString("- Chg PW *Time");
+    LCD_I2C_WriteString("C:Time  D:Canc");
+
 }
 
 uint8_t HMI_HandleOpenDoor(void)

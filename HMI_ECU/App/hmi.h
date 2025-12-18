@@ -31,12 +31,11 @@
 #define LOCKOUT_DURATION_SEC    60    /* 1 minute lockout */
 
 /* Menu Key Definitions */
-#define KEY_OPEN_DOOR           '+'
-#define KEY_CHANGE_PASSWORD     '-'
-#define KEY_SET_TIMEOUT         '*'
-#define KEY_CONFIRM             '#'
-#define KEY_CANCEL              'C'
-
+#define KEY_OPEN_DOOR           'A'    // Changed from '+'
+#define KEY_CHANGE_PASSWORD     'B'    // Changed from '-'
+#define KEY_SET_TIMEOUT         'C'    // Changed from '*'
+#define KEY_CONFIRM             '#'    // Keep as is
+#define KEY_CANCEL              'D'    // Changed from 'C'
 /* System States */
 typedef enum {
     STATE_INIT,
