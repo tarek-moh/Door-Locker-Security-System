@@ -53,8 +53,8 @@ int main(void){
    
    
     //testing writing in eeprom 
-   // uint8_t new_password[4] = {0xAA, 0xBB, 0xCC, 0xDD};
-   // bool reset_flag = change_Password(new_password);
+    uint8_t new_password[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+    bool reset_flag = change_Password(new_password);
     
    // if(reset_flag){
        // Password successfully changed toggle blue led 
