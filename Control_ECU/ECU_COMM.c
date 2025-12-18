@@ -91,10 +91,12 @@ void inline IncrementAttempts(uint8_t *attempts) {
         ++(*attempts);
     } else {
         Buzzer_Start();
+        while (buzzer_State) {
+          // Freeze until the buzzer finishes beeping
+        }
     }
 }
 
 void inline ResetAttempts(uint8_t *attempts) {
     *attempts = 0;
-    // todo: Turn off buzzer
 }
