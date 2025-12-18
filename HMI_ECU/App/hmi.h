@@ -34,27 +34,8 @@
 #define KEY_OPEN_DOOR           'A'    // Changed from '+'
 #define KEY_CHANGE_PASSWORD     'B'    // Changed from '-'
 #define KEY_SET_TIMEOUT         'C'    // Changed from '*'
-#define KEY_CONFIRM             '#'    // Keep as is
 #define KEY_CANCEL              'D'    // Changed from 'C'
-/* System States */
-typedef enum {
-    STATE_INIT,
-    STATE_FIRST_TIME_SETUP,
-    STATE_MAIN_MENU,
-    STATE_OPEN_DOOR,
-    STATE_CHANGE_PASSWORD,
-    STATE_SET_TIMEOUT,
-    STATE_LOCKOUT,
-    STATE_ERROR
-} HMI_State_t;
-
-/* Operation Results */
-typedef enum {
-    RESULT_SUCCESS,
-    RESULT_FAILURE,
-    RESULT_TIMEOUT,
-    RESULT_CANCELLED
-} HMI_Result_t;
+#define KEY_CONFIRM             '#'    // Keep as is
 
 /******************************************************************************
  *                         Function Prototypes                                 *
@@ -104,7 +85,7 @@ uint8_t HMI_VerifyPassword(const char* password);
  *   - password: Password string to save
  * Returns: 1 if successful, 0 if failed
  */
-uint8_t HMI_SavePassword(const char* password);
+void HMI_SavePassword(const char* password);
 
 /*
  * Description: Handle first-time password setup
@@ -184,14 +165,6 @@ void HMI_HandleLockout(void);
  * Returns: None
  */
 void HMI_DisplayMessage(const char* line1, const char* line2);
-
-/*
- * Description: Update LED color based on system state
- * Parameters:
- *   - state: Current system state
- * Returns: None
- */
-void HMI_UpdateLED(HMI_State_t state);
 
 /*
  * Description: Clear any pending keypad inputs

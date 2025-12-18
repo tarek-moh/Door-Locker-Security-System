@@ -25,11 +25,12 @@ typedef enum {
     CMD_CHANGE_PASSWORD,
     CMD_DOOR_UNLOCK,
     CMD_DOOR_LOCK,
+    CMD_SET_TIMEOUT,
+    CMD_SUCCESS,
+    CMD_FAIL,
     CMD_ALARM,
     CMD_ACK,
-    CMD_UNKNOWN,
-    CMD_SEND_TIMEOUT
-
+    CMD_UNKNOWN
 } COMM_CommandID;
 
 /*******************************************************************************

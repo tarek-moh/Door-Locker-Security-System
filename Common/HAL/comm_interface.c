@@ -16,7 +16,7 @@ void COMM_SendCommand(uint8_t cmd)
 
 void COMM_SendMessage(const uint8_t *msg)
 {
-    while(*msg != '\0')
+        while(*msg != '\0')
     {
         UART_SendByte(*msg);
         msg++;
