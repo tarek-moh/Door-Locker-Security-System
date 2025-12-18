@@ -15,7 +15,7 @@
  ******************************************************************************/
 
 /* Password Configuration */
-#define PASSWORD_LENGTH         5
+#define PASSWORD_LENGTH         4
 #define MAX_PASSWORD_ATTEMPTS   3
 
 /* Timeout Configuration (in seconds) */
