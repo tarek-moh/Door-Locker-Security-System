@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "../../Common/MCAL/tm4c123gh6pm.h"
 #include "timer.h"
 
 void SysTick_Init(uint32_t reload, uint8_t mode)

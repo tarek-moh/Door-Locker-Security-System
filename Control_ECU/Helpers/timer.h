@@ -2,6 +2,7 @@
 #define SYSTICK_H
 
 #include <stdint.h>
+#include "../../Common/MCAL/tm4c123gh6pm.h"
 
 #define SYSTICK_NOINT   0
 #define SYSTICK_INT     1
