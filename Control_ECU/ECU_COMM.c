@@ -6,7 +6,7 @@
 #include "Helpers/software_reset.h"
 
 #define MAX_ATTEMPTS 3
-#define TIMEOUT_MS 100
+#define TIMEOUT_MS 5000
 
 void static inline WaitForAck(void);
 void static inline IncrementAttempts(uint8_t *attempts);
