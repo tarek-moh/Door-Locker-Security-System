@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include "timer.h"
 
+volatile uint32_t msTicks = 0;
+
 void SysTick_Init(uint32_t reload, uint8_t mode)
 {
     interruptMode = mode;
@@ -38,4 +40,8 @@ void DelayMs(uint32_t ms)
 void SystickHandler(void)
 {
     msTicks++;
+}
+
+uint32_t GetTicks() {
+  return msTicks;
 }

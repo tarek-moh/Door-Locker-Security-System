@@ -1,4 +1,4 @@
-#include "comm_interface.h"
+#include "../Common/HAL/comm_interface.h"
 #include "Drivers/Eeprom/eeprom.h"
 #include "Drivers/Motor/motor.h"
 #include "Drivers/Buzzer/buzzer.h"
@@ -77,10 +77,10 @@ int main(void) {
 // Loop indefinitely until a response is made
 void inline WaitForAck(void) {
     // record start time
-    uint32_t start = msTicks;
+    uint32_t start = GetTicks();
 
     while (COMM_ReceiveCommand() != CMD_ACK) {
-        if ((msTicks - start) >= TIMEOUT_MS)
+        if ((GetTicks() - start) >= TIMEOUT_MS)
             // timeout
             ResetTiva();
     }
