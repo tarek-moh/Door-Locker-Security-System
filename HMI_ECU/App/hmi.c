@@ -123,7 +123,7 @@ void HMI_GetPasswordInput(char* buffer)
     }
 
     /* Null terminate */
-    buffer[PASSWORD_LENGTH] = '\n';
+    buffer[PASSWORD_LENGTH] = '\0';
 }
 
 uint8_t HMI_VerifyPassword(const char* password)
