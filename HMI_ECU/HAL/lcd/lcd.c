@@ -26,8 +26,6 @@ void I2C0_Init(void)
     I2C0_MTPR_R = 7;   // ? Correct
 }
 
-
-
 void I2C0_SendByte(uint8_t data)
 {
     I2C0_MSA_R = (LCD_I2C_ADDR << 1);

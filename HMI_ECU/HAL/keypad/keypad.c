@@ -1,4 +1,3 @@
-
 /*****************************************************************************
  * File: keypad.c
  * Description: 4x4 Keypad Driver for TM4C123GH6PM
