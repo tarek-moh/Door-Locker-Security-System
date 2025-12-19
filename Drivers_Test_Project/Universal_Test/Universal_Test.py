@@ -175,7 +175,7 @@ def show_menu():
     print("\n📋 Available Commands:")
     print("  1.  Send CMD_READY")
     print("  2.  Send CMD_SEND_PASSWORD (with password)")
-    print("  3.  Send CMD_CHANGE_PASSWORD (with old & new passwords)")
+    print("  3.  Send CMD_CHANGE_PASSWORD (with new password)")
     print("  4.  Send CMD_DOOR_UNLOCK")
     print("  5.  Send CMD_DOOR_LOCK")
     print("  6.  Send CMD_SET_TIMEOUT (with timeout value)")
@@ -206,7 +206,8 @@ def send_cmd_password():
     password_bytes = (password + '\n').encode()
 
     print(f"\n→ Sending CMD_SEND_PASSWORD (0x11) + '{password}'")
-    ser.write(bytes([CommandCode.CMD_SEND_PASSWORD]) + password_bytes)
+    ser.write(bytes([CommandCode.CMD_SEND_PASSWORD]))
+    ser.write(password_bytes)
     time.sleep(0.5)
     responses = read_all_responses()
     display_responses(responses)
@@ -221,15 +222,14 @@ def send_cmd_password():
 
 
 def send_cmd_change_password():
-    """Send CMD_CHANGE_PASSWORD with old and new passwords"""
-    old_password = input("  Enter old password (e.g., 1234): ")
+    """Send CMD_CHANGE_PASSWORD with new passwords"""
     new_password = input("  Enter new password (e.g., 5678): ")
 
-    old_pass_bytes = (old_password + '\n').encode()
     new_pass_bytes = (new_password + '\n').encode()
 
-    print(f"\n→ Sending CMD_CHANGE_PASSWORD (0x14) + old: '{old_password}' + new: '{new_password}'")
-    ser.write(bytes([CommandCode.CMD_CHANGE_PASSWORD]) + old_pass_bytes + new_pass_bytes)
+    print(f"\n→ Sending CMD_CHANGE_PASSWORD (0x14) + new: '{new_password}'")
+    ser.write(bytes([CommandCode.CMD_CHANGE_PASSWORD]))
+    ser.write(new_pass_bytes)
     time.sleep(0.5)
     responses = read_all_responses()
     display_responses(responses)
