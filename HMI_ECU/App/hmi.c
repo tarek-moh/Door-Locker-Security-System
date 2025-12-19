@@ -128,11 +128,11 @@ void HMI_GetPasswordInput(char* buffer)
 
 uint8_t HMI_VerifyPassword(const char* password)
 {
-    /* Send password */
-    COMM_SendMessage((const uint8_t*)password);
-
     /* Send command to verify password */
     COMM_SendCommand(CMD_SEND_PASSWORD);
+
+    /* Send password */
+    COMM_SendMessage((const uint8_t*)password);
 
     for (;;) {
         /* Wait for response */
@@ -308,8 +308,8 @@ uint8_t HMI_HandleSetTimeout(void)
             {
                 /* Password correct - save timeout */
                 uint8_t newTimeout = timeout;
-                COMM_SendMessage((const uint8_t*)&newTimeout);
                 COMM_SendCommand(CMD_SET_TIMEOUT);
+                COMM_SendMessage((const uint8_t*)&newTimeout);
 
                 for(;;) {
                     if (COMM_ReceiveCommand() == CMD_SUCCESS) {
