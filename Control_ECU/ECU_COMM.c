@@ -39,11 +39,11 @@ int main(void) {
                 bool isCorrect = compare_Passwords(input);
 
                 if (isCorrect == true) {
-                    ResetAttempts(&incorrectAttempts);
                     COMM_SendCommand(CMD_PASSWORD_CORRECT);
+                    ResetAttempts(&incorrectAttempts);
                 } else {
-                    IncrementAttempts(&incorrectAttempts);
                     COMM_SendCommand(CMD_PASSWORD_WRONG);
+                    IncrementAttempts(&incorrectAttempts);
                 }
                 WaitForAck();
                 break;
@@ -91,7 +91,7 @@ void inline IncrementAttempts(uint8_t *attempts) {
         ++(*attempts);
     } else {
         Buzzer_Start();
-        while (buzzer_State) {
+        while (buzzer_State() == 1) {
           // Freeze until the buzzer finishes beeping
         }
     }

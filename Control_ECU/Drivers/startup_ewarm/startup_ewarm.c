@@ -27,6 +27,8 @@
 #include "hw_nvic.h"
 #include "hw_types.h"
 
+#include "../../Helpers/timer.h"
+
 //*****************************************************************************
 //
 // Enable the IAR extensions for this source file.
@@ -101,7 +103,7 @@ __root const uVectorEntry __vector_table [] @ ".intvec" =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    SystickHandler,                         // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
