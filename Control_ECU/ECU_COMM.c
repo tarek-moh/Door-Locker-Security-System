@@ -40,7 +40,17 @@ int main(void) {
     // Send a command to the Control_ECU that the HMI_ECU is reading for communication
     COMM_SendCommand(CMD_READY);
     while (COMM_ReceiveCommand() != CMD_READY) { }
-  //  UARTprintf("DEBUG: Received Password via UART: %s\n", input);
+
+    // Check if password is already initialized
+    if (!is_password_init()) {
+        COMM_SendCommand(CMD_INIT);
+    }
+    else
+    {
+        COMM_SendCommand(CMD_ACK)
+    }
+
+    // UARTprintf("DEBUG: Received Password via UART: %s\n", input);
     // Impossible value initially
     uint8_t incorrectAttempts = 0;
     uint8_t input[10];
@@ -78,6 +88,7 @@ int main(void) {
                 bool flag = change_Password(input);
                 if(flag){
                      COMM_SendCommand(CMD_ACK); //return ack
+                     set_init_flag();
                      toggle_LED(1 << 2);
                 }
                 break;
