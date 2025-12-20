@@ -30,7 +30,8 @@ typedef enum {
     CMD_FAIL,
     CMD_ALARM,
     CMD_ACK,
-    CMD_UNKNOWN
+    CMD_UNKNOWN,
+    CMD_INIT
 } COMM_CommandID;
 
 /*******************************************************************************

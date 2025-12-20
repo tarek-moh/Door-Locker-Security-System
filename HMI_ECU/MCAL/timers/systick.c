@@ -43,7 +43,5 @@ void DelayMs(uint32_t ms)
 void SystickHandler(void)
 {
     /* Toggle Green LED every SysTick interrupt */
-    DIO_TogglePin(PORTF_ID, PIN3_ID);
-    DIO_TogglePin(PORTF_ID, PIN3_ID);
-    DIO_TogglePin(PORTF_ID, PIN3_ID);
+    GPIO_TogglePin(PORTF_ID, PIN3_ID);
 }

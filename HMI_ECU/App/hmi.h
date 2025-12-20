@@ -180,4 +180,11 @@ void HMI_ClearKeypadBuffer(void);
  */
 void DisplayConnection();
 
+/*
+ * Description: Initializes the password for the first time
+ * Parameters: None
+ * Returns: None
+ */
+void Init_Password();
+
 #endif /* HMI_H_ */

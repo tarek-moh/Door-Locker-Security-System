@@ -5,7 +5,7 @@
 #define PASSWORD_OFFSET 0 //used byte offset 0 to store password inside 
 #define AUTOLOCKOUT_OFFSET 1 //used byte offset 1 to store auto lock value
 
-//read the password from the eeprom/block 1 and compare it with the passed password 
+//read the password from the eeprom/block 1 and compare it with the passed password
 bool compare_Passwords(const uint8_t *entered_password){
   
   EEPROM_HW_Init(); //initialize eeprom block!!

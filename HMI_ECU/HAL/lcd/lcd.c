@@ -105,3 +105,19 @@ void LCD_I2C_WriteString(const char *str)
     while (*str)
         LCD_SendData(*str++);
 }
+
+// Clears a single line (row: 0 or 1)
+void LCD_I2C_ClearLine(uint8_t row)
+{
+    // Move cursor to the beginning of the specified row
+    LCD_I2C_SetCursor(row, 0);
+
+    // Write spaces across the whole line (assume 16 characters)
+    for (uint8_t i = 0; i < 16; i++)
+    {
+        LCD_I2C_WriteChar(' ');
+    }
+
+    // Return cursor to beginning of the line
+    LCD_I2C_SetCursor(row, 0);
+}

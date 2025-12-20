@@ -15,7 +15,15 @@ int main()
   
   while (COMM_ReceiveCommand() != CMD_READY) { }
   COMM_SendCommand(CMD_READY);
-  
+
+  uint8_t isInit = COMM_ReceiveCommand();
+  if (isInit == CMD_INIT) {
+	uint8_t initializedPassword;
+    do {
+    	initializedPassword = HMI_SetupPassword();
+    } while (!initializedPassword);
+  }
+
   DisplayConnection();
   
   while(1)

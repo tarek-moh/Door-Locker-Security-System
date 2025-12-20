@@ -8,5 +8,6 @@ void LCD_I2C_Clear(void);
 void LCD_I2C_SetCursor(uint8_t row, uint8_t col);
 void LCD_I2C_WriteChar(char c);
 void LCD_I2C_WriteString(const char *str);
+void LCD_I2C_ClearLine(uint8_t row);
 
 #endif

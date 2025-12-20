@@ -88,8 +88,11 @@ void HMI_GetPasswordInput(char* buffer)
     /* Clear buffer */
     memset(buffer, 0, PASSWORD_LENGTH + 1);
 
-    /* Move cursor to second line for password entry */
-    LCD_I2C_SetCursor(1, 0);
+    /*
+	* Move cursor to second line for password entry
+ 	* as well as clear the line
+ 	*/
+    LCD_I2C_ClearLine(1);
 
     /* Clear any pending inputs */
     HMI_ClearKeypadBuffer();
