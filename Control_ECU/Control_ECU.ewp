@@ -2092,19 +2092,31 @@
         <name>$PROJ_DIR$\Drivers\Buzzer\buzzer.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\..\Common\HAL\comm_interface.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\Common\HAL\comm_interface.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\ECU_COMM.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\Drivers\Eeprom\eeprom.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Drivers\Eeprom\eeprom.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\Drivers\Eeprom\eeprom_hw.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Drivers\Eeprom\eeprom_hw_tm4c.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\Drivers\startup_ewarm\hw_nvic.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Drivers\startup_ewarm\hw_types.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\Drivers\Eeprom\main.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Drivers\Motor\motor.c</name>
@@ -2116,9 +2128,21 @@
         <name>$PROJ_DIR$\Drivers\startup_ewarm\startup_ewarm.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\Helpers\timer.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Helpers\timer.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\Drivers\Buzzer\tm4c123gh6pm.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Drivers\Eeprom\tm4c123gh6pm.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\Common\MCAL\uart.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\Common\MCAL\uart.h</name>
     </file>
 </project>
