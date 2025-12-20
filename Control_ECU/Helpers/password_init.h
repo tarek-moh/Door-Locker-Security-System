@@ -1,5 +1,5 @@
 #include "../../Common/MCAL/tm4c123gh6pm.h"
-#include "../Eeprom/eeprom_hw.h"
+#include "../Drivers/Eeprom/eeprom_hw.h"
 
 
 // checks eeprom (is initialized) flag and returns the password state

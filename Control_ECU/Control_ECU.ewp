@@ -2125,6 +2125,12 @@
         <name>$PROJ_DIR$\Drivers\Motor\motor.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\Helpers\password_init.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Helpers\password_init.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\Drivers\startup_ewarm\startup_ewarm.c</name>
     </file>
     <file>

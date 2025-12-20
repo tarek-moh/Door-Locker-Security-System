@@ -47,7 +47,7 @@ int main(void) {
     }
     else
     {
-        COMM_SendCommand(CMD_ACK)
+        COMM_SendCommand(CMD_ACK);
     }
 
     // UARTprintf("DEBUG: Received Password via UART: %s\n", input);
