@@ -2098,9 +2098,6 @@
         <name>$PROJ_DIR$\..\Common\HAL\comm_interface.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\COMM_Tests\main.c</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\..\HMI_ECU\MCAL\gpio\gpio.c</name>
     </file>
     <file>
@@ -2131,7 +2128,7 @@
         <name>$PROJ_DIR$\..\HMI_ECU\HAL\led\led.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\..\HMI_ECU\main.c</name>
+        <name>$PROJ_DIR$\COMM_Tests\main.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\HMI_ECU\HAL\pot\pot.c</name>

@@ -140,10 +140,11 @@ uint8_t HMI_VerifyPassword(const char* password)
 
         if(response == CMD_PASSWORD_CORRECT)
         {
+            COMM_SendCommand(CMD_ACK);
             return 1;  /* Password correct */
         }
-        else if (response == CMD_PASSWORD_WRONG)
-        {
+        else if (response == CMD_PASSWORD_WRONG) {
+            COMM_SendCommand(CMD_ACK);
             return 0;  /* Password incorrect */
         }
     }
@@ -219,7 +220,6 @@ uint8_t HMI_HandleOpenDoor(void)
     /* Verify password with Control ECU */
     if(HMI_VerifyPassword(password))
     {
-        COMM_SendCommand(CMD_ACK);
         DelayMs(50);
         /* Password correct - send door unlock command */
         COMM_SendCommand(CMD_DOOR_UNLOCK);
@@ -229,7 +229,8 @@ uint8_t HMI_HandleOpenDoor(void)
         /* Display unlocking status */
         LED_setOn(LED_GREEN);
         HMI_DisplayMessage("Unlocked Door", "");
-
+        DelayMs(2000);
+        
         return 1;  /* Success */
     }
     else
@@ -238,6 +239,7 @@ uint8_t HMI_HandleOpenDoor(void)
         LED_setOn(LED_RED);
 
         HMI_DisplayMessage("Incorrect Password!", "");
+        DelayMs(2000);
 
         return 0;
     }
@@ -262,7 +264,6 @@ uint8_t HMI_HandleChangePassword(void)
     else
     {
         LED_setOn(LED_RED);
-        char msg[17];
         HMI_DisplayMessage("Wrong Password!", "");
         HMI_Delay_Seconds(2);
         return 0;
