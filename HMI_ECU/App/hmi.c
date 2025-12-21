@@ -35,7 +35,7 @@ void HMI_Init(void)
     Keypad_Init();
     LED_init();
     POT_Init();
-    COMM_Init();
+    //COMM_Init();
 
     /* Initialize SysTick for 1ms delays */
     SysTick_Init(16000, SYSTICK_NOINT);
@@ -88,12 +88,6 @@ void HMI_GetPasswordInput(char* buffer)
     /* Clear buffer */
     memset(buffer, 0, PASSWORD_LENGTH + 1);
 
-    /*
-	* Move cursor to second line for password entry
- 	* as well as clear the line
- 	*/
-    LCD_I2C_ClearLine(1);
-
     /* Clear any pending inputs */
     HMI_ClearKeypadBuffer();
 
@@ -111,6 +105,14 @@ void HMI_GetPasswordInput(char* buffer)
                 break;
             }
             DelayMs(50);
+        }
+
+        /*
+	    * Move cursor to second line for password entry
+ 	    * as well as clear the line
+ 	    */
+        if (idx == 0) {
+            LCD_I2C_ClearLine(1);
         }
 
         /* Store the key and display '*' */
@@ -160,9 +162,9 @@ void HMI_SavePassword(const char* password)
 
     /* Send password string */
     COMM_SendMessage((const uint8_t*)password);
-
+    
     /* Wait for acknowledgment */
-    while (COMM_ReceiveCommand() != CMD_ACK) { }
+    uint8_t command = COMM_ReceiveCommand();
 }
 
 uint8_t HMI_SetupPassword(void)
@@ -227,13 +229,17 @@ uint8_t HMI_HandleOpenDoor(void)
         /* Password correct - send door unlock command */
         COMM_SendCommand(CMD_DOOR_UNLOCK);
 
-        while (COMM_ReceiveCommand() != CMD_ACK) { }
-
+        if(COMM_ReceiveCommand() != CMD_ACK)
+        {
+           HMI_DisplayMessage("ERROR", "TRY AGAIN");   
+        }
+        else
+        {  
         /* Display unlocking status */
         LED_setOn(LED_GREEN);
         HMI_DisplayMessage("Unlocked Door", "");
         DelayMs(2000);
-        
+        }
         return 1;  /* Success */
     }
     else
