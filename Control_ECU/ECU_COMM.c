@@ -6,7 +6,7 @@
 //#include "Helpers/software_reset.h"
  #include "../Common/MCAL/tm4c123gh6pm.h"
 
-#define MAX_ATTEMPTS 3
+#define MAX_ATTEMPTS 2
 #define TIMEOUT_MS 100
 
 void static inline WaitForAck(void);
