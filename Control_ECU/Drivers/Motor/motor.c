@@ -64,8 +64,8 @@ void open_door(void){
   Door_State = 1; //change mmotor state to opening 
   GPIO_PORTB_DATA_R |=  (1<<2); //IN1 = 1
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0
-  TIMER1_CTL_R = 0x1; //start timer 
   for(int i = 0; i<9000000;i++){} //delay to keep the motor mocing for a while 
+  TIMER1_CTL_R = 0x1; //start timer 
   GPIO_PORTB_DATA_R &= ~(1<<2);  //IN1 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
 }
 
