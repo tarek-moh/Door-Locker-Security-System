@@ -47,7 +47,7 @@ int main(void) {
     }
     else
     {
-        COMM_SendCommand(CMD_INIT);
+        COMM_SendCommand(CMD_ACK);
     }
 
     // UARTprintf("DEBUG: Received Password via UART: %s\n", input);
@@ -76,11 +76,9 @@ int main(void) {
                 break;
         }
             case CMD_DOOR_UNLOCK: 
-                COMM_SendCommand(CMD_ACK);
               volatile int seconds = get_AutoLockTimeout();
             // get_AutoLockTimeout() ######ADD THIS IN ATART MOTOR() 
                 start_Motor(seconds);
-                
                 break;
         case CMD_CHANGE_PASSWORD:{
                 COMM_ReceiveMessage(input);
