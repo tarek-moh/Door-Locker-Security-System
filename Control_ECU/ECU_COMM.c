@@ -47,11 +47,10 @@ int main(void) {
     }
     else
     {
-        COMM_SendCommand(CMD_ACK);
+        COMM_SendCommand(CMD_INIT);
     }
 
     // UARTprintf("DEBUG: Received Password via UART: %s\n", input);
-    // Impossible value initially
     uint8_t incorrectAttempts = 0;
     uint8_t input[10];
 
@@ -67,7 +66,7 @@ int main(void) {
                 if (isCorrect == true) {
                     ResetAttempts(&incorrectAttempts);
                     COMM_SendCommand(CMD_PASSWORD_CORRECT);
-                    toggle_LED(1 << 2);
+                    toggle_LED(1 << 3);
                 } else {
                     IncrementAttempts(&incorrectAttempts);
                     COMM_SendCommand(CMD_PASSWORD_WRONG);
@@ -77,9 +76,9 @@ int main(void) {
                 break;
         }
             case CMD_DOOR_UNLOCK: 
+                COMM_SendCommand(CMD_ACK);
               volatile int seconds = get_AutoLockTimeout();
             // get_AutoLockTimeout() ######ADD THIS IN ATART MOTOR() 
-                COMM_SendCommand(CMD_ACK);
                 start_Motor(seconds);
                 
                 break;
