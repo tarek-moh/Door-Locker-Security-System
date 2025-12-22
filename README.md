@@ -87,7 +87,7 @@ Watch the system in action: **[Video Demo Link](https://drive.google.com/drive/f
 - **Command-Based**: Structured command/response protocol
 - **Error Handling**: Acknowledgment and retry mechanisms
 
-## 🔧 Hardware Components
+## Hardware Components
 
 ### HMI ECU Peripherals
 - **LCD**: 16x2 character display (HD44780 compatible)
@@ -188,7 +188,7 @@ Door-Locker-Security-System/
 └── README.md                    # This file
 ```
 
-## 🔌 Communication Protocol
+## Communication Protocol
 
 ### Command Codes
 
