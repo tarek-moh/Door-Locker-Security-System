@@ -2140,10 +2140,7 @@
         <name>$PROJ_DIR$\Helpers\timer.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\Drivers\Buzzer\tm4c123gh6pm.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\Drivers\Eeprom\tm4c123gh6pm.h</name>
+        <name>$PROJ_DIR$\..\Common\MCAL\tm4c123gh6pm.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\Common\MCAL\uart.c</name>

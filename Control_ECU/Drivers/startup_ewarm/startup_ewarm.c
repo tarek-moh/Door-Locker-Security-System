@@ -46,7 +46,7 @@ static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
 //extern void systick_ISR (void);
-//extern void PORTF_Handler(void) ;
+//extern void PORTF_Handler(void;
 extern void Timer0A_Handler(void);
 extern void Timer1A_Handler(void);
 //extern void SystickHandler(void);

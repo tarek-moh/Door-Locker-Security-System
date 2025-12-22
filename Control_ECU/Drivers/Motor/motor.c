@@ -1,5 +1,6 @@
 #include "motor.h"
 #include "../../../Common/MCAL/tm4c123gh6pm.h"
+#include "../../../Common/HAL/comm_interface.h"
 
 
 #define CLK_FREQUENCY 16000000
@@ -64,8 +65,8 @@ void open_door(void){
   Door_State = 1; //change mmotor state to opening 
   GPIO_PORTB_DATA_R |=  (1<<2); //IN1 = 1
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0
-  TIMER1_CTL_R = 0x1; //start timer 
   for(int i = 0; i<9000000;i++){} //delay to keep the motor mocing for a while 
+  TIMER1_CTL_R = 0x1; //start timer 
   GPIO_PORTB_DATA_R &= ~(1<<2);  //IN1 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
 }
 
@@ -78,6 +79,7 @@ void close_door(void){
   toggle_LED(1 << 3); 
   for(int i = 0; i<9000000;i++){} //delay to keep the motor moving for a while
   GPIO_PORTB_DATA_R &= ~(1<<3); //IN2 = 0 (the input to the h bridge is [0 & 0] to stop the movemnt)
+  COMM_SendCommand(CMD_ACK);
 }
 
 void Timer1A_Handler(void){

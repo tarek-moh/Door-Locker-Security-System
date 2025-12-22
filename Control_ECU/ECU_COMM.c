@@ -6,8 +6,8 @@
 //#include "Helpers/software_reset.h"
  #include "../Common/MCAL/tm4c123gh6pm.h"
 
-#define MAX_ATTEMPTS 3
-#define TIMEOUT_MS 5000
+#define MAX_ATTEMPTS 2
+#define TIMEOUT_MS 100
 
 void static inline WaitForAck(void);
 void static inline IncrementAttempts(uint8_t *attempts);
@@ -51,7 +51,6 @@ int main(void) {
     }
 
     // UARTprintf("DEBUG: Received Password via UART: %s\n", input);
-    // Impossible value initially
     uint8_t incorrectAttempts = 0;
     uint8_t input[10];
 
@@ -66,7 +65,7 @@ int main(void) {
 
                 if (isCorrect == true) {
                     COMM_SendCommand(CMD_PASSWORD_CORRECT);
-                    toggle_LED(1 << 2);
+                    toggle_LED(1 << 3);
                 } else {
                     COMM_SendCommand(CMD_PASSWORD_WRONG);
                     IncrementAttempts(&incorrectAttempts);
@@ -79,9 +78,7 @@ int main(void) {
             case CMD_DOOR_UNLOCK: 
               volatile int seconds = get_AutoLockTimeout();
             // get_AutoLockTimeout() ######ADD THIS IN ATART MOTOR() 
-                COMM_SendCommand(CMD_ACK);
                 start_Motor(seconds);
-                
                 break;
         case CMD_CHANGE_PASSWORD:{
                 COMM_ReceiveMessage(input);
