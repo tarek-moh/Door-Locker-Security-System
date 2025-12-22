@@ -26,6 +26,11 @@ The Door Locker Security System is a comprehensive embedded solution that separa
 
 This architecture ensures that security-critical operations remain isolated from the user interface, enhancing system security.
 
+## Video Demo
+
+Watch the system in action: **[Video Demo Link](https://drive.google.com/drive/folders/1RuMUy5Gt6hKxhedR9rklZ9mdEJLcckrN?usp=sharing)**
+
+
 ## System Architecture
 
 ```
