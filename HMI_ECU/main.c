@@ -40,9 +40,7 @@ int main()
 
   //uint8_t isInit = COMM_ReceiveCommand();
   uint8_t volatile isInit;
-  do {
-      isInit = COMM_ReceiveCommand();
-  } while (isInit != CMD_INIT);
+  isInit = COMM_ReceiveCommand();
   if (isInit == CMD_INIT) {
       LED_init();
        LED_setOn(LED_RED);

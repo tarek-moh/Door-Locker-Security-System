@@ -229,16 +229,13 @@ uint8_t HMI_HandleOpenDoor(void)
         /* Password correct - send door unlock command */
         COMM_SendCommand(CMD_DOOR_UNLOCK);
 
-        if(COMM_ReceiveCommand() != CMD_ACK)
-        {
-           HMI_DisplayMessage("ERROR", "TRY AGAIN");   
-        }
-        else
-        {  
         /* Display unlocking status */
         LED_setOn(LED_GREEN);
         HMI_DisplayMessage("Unlocked Door", "");
-        DelayMs(2000);
+
+        if(COMM_ReceiveCommand() != CMD_ACK)
+        {
+           HMI_DisplayMessage("ERROR", "TRY AGAIN");   
         }
         return 1;  /* Success */
     }
